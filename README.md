@@ -1,4 +1,4 @@
-# Task App Frontend
+# Task Management System Frontend
 
 
 
@@ -6,7 +6,7 @@
 ## Project Setup
 - Run the Laravel Project and provide the base url in .env file
 - User credentails available through seeder:
-    -- Email: admin@mail.com
+    -- Email: admin@gmail.com
     -- Password: password
 
 ```sh

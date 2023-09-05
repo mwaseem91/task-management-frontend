@@ -1,47 +1,54 @@
 <script setup>
 import { onMounted, ref } from 'vue';
-import { useStore } from "../stores/appStore"
-
+import { useStore } from '../stores/appStore';
+import axios from 'axios';
 
 const store = useStore();
-const tasks = ref([])
+const tasks = ref([]);
 
 const filters = ref([
-  { name: "All", value: 'all' },
-  { name: "Completed", value: 'completed' },
-  { name: "Incomplete", value: 'incomplete' },
+  { name: 'All', value: 'all' },
+  { name: 'Completed', value: 'completed' },
+  { name: 'Incomplete', value: 'incomplete' },
 ]);
 
 const selectedFilter = ref('all');
 
-onMounted(() => {
-  getTasks();
-})
+async function getTasks(filter = 'all') {
+  try {
+    const response = await axios.get(`/tasks?filter=${filter}`);
 
-
-function getTasks(filter = 'all') {
-  selectedFilter.value = filter;
-
-  store.getTasks(filter).then(() => {
-    let allTasks = store.tasks.map((item) => ({
-      ...item,
-
-    }))
-
-    tasks.value = allTasks;
-  });
+    if (response.data.status === true) {
+      tasks.value = response.data.data;
+    }
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-async function toggleTaskCompleted(task, index) {
-  if (task.id) {
-    const updatedTask = await store.toggleTaskComplete(task);
-    task.completed = updatedTask.completed;
+onMounted(() => {
+  axios.defaults.headers.common = {
+    Authorization: `Bearer ${store.token}`,
+    Accept: 'application/json',
+  };
 
-  } else {
-    task.completed = !task.completed
+  getTasks(selectedFilter.value); 
+});
+
+async function toggleTaskCompleted(task) {
+  try {
+    if (task.id) {
+      const response = await axios.post('/tasks/completed', { id: task.id });
+      task.completed = response.data?.data.task.completed;
+    } else {
+      task.completed = !task.completed;
+    }
+  } catch (error) {
+    console.error(error);
   }
 }
 </script>
+
 
 
 
@@ -82,7 +89,7 @@ async function toggleTaskCompleted(task, index) {
         </table>
       </div>
       <div v-if="!tasks.length">
-        <p class="text-gray-500">No tasks</p>
+        <p class="text-gray-500">No tasks added yet</p>
       </div>
     </div>
   </div>

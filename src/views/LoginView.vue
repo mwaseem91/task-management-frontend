@@ -14,7 +14,11 @@ const loginUser = async() => {
         password: password.value,
     });
 
-   
+    if (store.token) {
+        router.push('/');
+    } else {
+      alert('Error occurred while logging in the user');
+    }
 }
 
 

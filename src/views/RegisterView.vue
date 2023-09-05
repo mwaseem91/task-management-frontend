@@ -15,7 +15,7 @@ const registerUser = async() => {
         password: password.value,
         name: name.value,
     });
-
+   router.push("/");
 
 }
 

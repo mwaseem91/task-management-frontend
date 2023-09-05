@@ -20,7 +20,6 @@ const store = useStore();
 
 store.verifyToken().then(() => {
   if (store.token) {
-    // Axios configuration
     axios.defaults.headers.common = {
       Authorization: `Bearer ${store.token}`,
       Accept: "application/json",
